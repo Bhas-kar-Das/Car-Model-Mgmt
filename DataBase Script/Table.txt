@@ -1,0 +1,303 @@
+USE [CarManagement]
+GO
+/****** Object:  Table [dbo].[Brands]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Brands](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK__Brands__3214EC0748CF68CA] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Brands__737584F66756396A] UNIQUE NONCLUSTERED 
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CarModelPhotos]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CarModelPhotos](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[CarModelId] [nvarchar](255) NOT NULL,
+	[PhotoUrl] [nvarchar](255) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK__CarModel__3214EC07D1E18B7F] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CarModels]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CarModels](
+	[Id] [nvarchar](100) NOT NULL,
+	[Brand] [int] NOT NULL,
+	[Class] [int] NOT NULL,
+	[ModelName] [nvarchar](100) NOT NULL,
+	[ModelCode] [nvarchar](50) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[Features] [nvarchar](max) NULL,
+	[Price] [decimal](18, 2) NOT NULL,
+	[DateOfManufacturing] [datetime] NOT NULL,
+	[SortOrder] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Status] [bit] NULL,
+	[Active] [bit] NOT NULL,
+ CONSTRAINT [PK__CarModel__3214EC07D17EED5C] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__CarModel__514DC4D45162CDA3] UNIQUE NONCLUSTERED 
+(
+	[ModelCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Classes]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Classes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK__Classes__3214EC07DF6B45FC] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Classes__737584F699F821C7] UNIQUE NONCLUSTERED 
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CommissionRates]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CommissionRates](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Brand] [nvarchar](50) NOT NULL,
+	[BrandId] [int] NOT NULL,
+	[FixedCommission] [decimal](18, 2) NULL,
+	[ClassACommission] [decimal](5, 2) NULL,
+	[ClassBCommission] [decimal](5, 2) NULL,
+	[ClassCCommission] [decimal](5, 2) NULL,
+ CONSTRAINT [PK__Commissi__3214EC0774E9FCE0] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Commissi__BAB741D7A289FAE8] UNIQUE NONCLUSTERED 
+(
+	[Brand] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[RoleMaster]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RoleMaster](
+	[RoleId] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [varchar](50) NOT NULL,
+	[Description] [varchar](255) NULL,
+	[Status] [varchar](20) NOT NULL,
+	[CreatedOn] [datetime] NULL,
+	[CreatedBy] [varchar](50) NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SalesmanSalesFigures]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SalesmanSalesFigures](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[CId] [varchar](50) NOT NULL,
+	[SalesmanName] [nvarchar](100) NOT NULL,
+	[LastYearTotalSales] [decimal](18, 2) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Salesmen]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Salesmen](
+	[Id] [nvarchar](100) NOT NULL,
+	[CId] [varchar](50) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[LastYearSales] [decimal](18, 2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK__Salesmen__3214EC07073CDB31] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Salesmen_CId] UNIQUE NONCLUSTERED 
+(
+	[CId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SalesRecords]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SalesRecords](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[SalesmanId] [nvarchar](100) NOT NULL,
+	[CarModelId] [nvarchar](100) NOT NULL,
+	[NumberOfCarsSold] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[UpdatedBy] [nvarchar](50) NULL,
+	[Brand] [int] NOT NULL,
+	[Class] [int] NOT NULL,
+ CONSTRAINT [PK__SalesRec__3214EC07F6BA9182] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 9/23/2024 12:34:04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[UserId] [int] IDENTITY(1,1) NOT NULL,
+	[CId] [varchar](50) NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[PasswordHash] [varchar](255) NOT NULL,
+	[Email] [varchar](100) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[Status] [varchar](20) NOT NULL,
+	[CreatedOn] [datetime] NULL,
+	[CreatedBy] [varchar](50) NOT NULL,
+	[UpdatedOn] [datetime] NULL,
+	[UpdatedBy] [varchar](50) NOT NULL,
+ CONSTRAINT [PK__Users__1788CC4CAAD7BF44] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Users__536C85E43F91CB93] UNIQUE NONCLUSTERED 
+(
+	[Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ__Users__A9D10534F88B0CC7] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Brands] ADD  CONSTRAINT [DF__Brands__CreatedO__3C69FB99]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[Brands] ADD  CONSTRAINT [DF_Brands_Status]  DEFAULT ((1)) FOR [Status]
+GO
+ALTER TABLE [dbo].[CarModelPhotos] ADD  CONSTRAINT [DF__CarModelP__Creat__4AB81AF0]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[CarModelPhotos] ADD  CONSTRAINT [DF_CarModelPhotos_Status]  DEFAULT ((1)) FOR [Status]
+GO
+ALTER TABLE [dbo].[CarModels] ADD  CONSTRAINT [DF__CarModels__Creat__4D94879B]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[CarModels] ADD  CONSTRAINT [DF_CarModels_Status]  DEFAULT ((1)) FOR [Status]
+GO
+ALTER TABLE [dbo].[Classes] ADD  CONSTRAINT [DF__Classes__Created__412EB0B6]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[Classes] ADD  CONSTRAINT [DF_Classes_Status]  DEFAULT ((1)) FOR [Status]
+GO
+ALTER TABLE [dbo].[RoleMaster] ADD  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [dbo].[RoleMaster] ADD  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[RoleMaster] ADD  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[Salesmen] ADD  CONSTRAINT [DF__Salesmen__Create__4F7CD00D]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[Salesmen] ADD  CONSTRAINT [DF__Salesmen__Status__5070F446]  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [dbo].[SalesRecords] ADD  CONSTRAINT [DF__SalesReco__Creat__5165187F]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF__Users__Status__76969D2E]  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF__Users__CreatedOn__778AC167]  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF__Users__UpdatedOn__787EE5A0]  DEFAULT (getdate()) FOR [UpdatedOn]
+GO
+ALTER TABLE [dbo].[CarModels]  WITH CHECK ADD  CONSTRAINT [CK__CarModels__Price__25869641] CHECK  (([Price]>(0)))
+GO
+ALTER TABLE [dbo].[CarModels] CHECK CONSTRAINT [CK__CarModels__Price__25869641]
+GO
+ALTER TABLE [dbo].[CarModels]  WITH CHECK ADD  CONSTRAINT [CK__CarModels__SortO__267ABA7A] CHECK  (([SortOrder]>=(0)))
+GO
+ALTER TABLE [dbo].[CarModels] CHECK CONSTRAINT [CK__CarModels__SortO__267ABA7A]
+GO
+ALTER TABLE [dbo].[CommissionRates]  WITH CHECK ADD  CONSTRAINT [CK__Commissio__Class__32E0915F] CHECK  (([ClassACommission]>=(0)))
+GO
+ALTER TABLE [dbo].[CommissionRates] CHECK CONSTRAINT [CK__Commissio__Class__32E0915F]
+GO
+ALTER TABLE [dbo].[CommissionRates]  WITH CHECK ADD  CONSTRAINT [CK__Commissio__Class__33D4B598] CHECK  (([ClassBCommission]>=(0)))
+GO
+ALTER TABLE [dbo].[CommissionRates] CHECK CONSTRAINT [CK__Commissio__Class__33D4B598]
+GO
+ALTER TABLE [dbo].[CommissionRates]  WITH CHECK ADD  CONSTRAINT [CK__Commissio__Class__34C8D9D1] CHECK  (([ClassCCommission]>=(0)))
+GO
+ALTER TABLE [dbo].[CommissionRates] CHECK CONSTRAINT [CK__Commissio__Class__34C8D9D1]
+GO
+ALTER TABLE [dbo].[CommissionRates]  WITH CHECK ADD  CONSTRAINT [CK__Commissio__Fixed__31EC6D26] CHECK  (([FixedCommission]>=(0)))
+GO
+ALTER TABLE [dbo].[CommissionRates] CHECK CONSTRAINT [CK__Commissio__Fixed__31EC6D26]
+GO
+ALTER TABLE [dbo].[Salesmen]  WITH CHECK ADD  CONSTRAINT [CK__Salesmen__LastYe__29572725] CHECK  (([LastYearSales]>=(0)))
+GO
+ALTER TABLE [dbo].[Salesmen] CHECK CONSTRAINT [CK__Salesmen__LastYe__29572725]
+GO
+ALTER TABLE [dbo].[SalesRecords]  WITH CHECK ADD  CONSTRAINT [CK__SalesReco__Numbe__2C3393D0] CHECK  (([NumberOfCarsSold]>=(0)))
+GO
+ALTER TABLE [dbo].[SalesRecords] CHECK CONSTRAINT [CK__SalesReco__Numbe__2C3393D0]
+GO
