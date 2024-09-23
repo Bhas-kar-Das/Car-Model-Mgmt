@@ -1,0 +1,222 @@
+USE [CarManagement]
+GO
+/****** Object:  StoredProcedure [dbo].[CalculateCommission]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- Salesman Commission Calculation Procedure
+CREATE PROCEDURE [dbo].[CalculateCommission]
+AS
+BEGIN
+    SELECT S.Name, 
+           SUM(R.NumberOfCarsSold * C.Price * CR.FixedCommission) AS FixedCommission,
+           SUM(R.NumberOfCarsSold * C.Price * 
+               CASE 
+                   WHEN C.Class = 'A-Class' THEN CR.ClassACommission
+                   WHEN C.Class = 'B-Class' THEN CR.ClassBCommission
+                   WHEN C.Class = 'C-Class' THEN CR.ClassCCommission
+               END) AS TotalCommission
+    FROM SalesRecords R
+    JOIN Salesmen S ON R.SalesmanId = S.Id
+    JOIN CarModels C ON R.CarModelId = C.Id
+    JOIN CommissionRates CR ON C.Brand = CR.Brand
+    GROUP BY S.Name;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[CreateCarModel]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- Create Car Model Procedure  
+CREATE PROCEDURE [dbo].[CreateCarModel]  
+    @Brand NVARCHAR(50),  
+    @Class NVARCHAR(50),  
+    @ModelName NVARCHAR(100),  
+    @ModelCode NVARCHAR(10),  
+    @Description NVARCHAR(MAX),  
+    @Features NVARCHAR(MAX),  
+    @Price DECIMAL(18,2),  
+    @DateOfManufacturing DATETIME,  
+    @SortOrder INT  
+AS  
+BEGIN  
+    INSERT INTO CarModels (Brand, Class, ModelName, ModelCode, Description, Features, Price, DateOfManufacturing, SortOrder,Active,CreatedBy,CreatedOn)  
+    VALUES (@Brand, @Class, @ModelName, @ModelCode, @Description, @Features, @Price, @DateOfManufacturing, @SortOrder,1,'system',getdate());  
+END;  
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllCarModels]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetAllCarModels]
+    @Search NVARCHAR(255) = NULL,
+    @OrderBy NVARCHAR(50) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        cm.[Id],
+        cm.[Brand],
+        cm.[Class],
+        cm.[ModelName],
+        cm.[ModelCode],
+        cm.[Description],
+        cm.[Features],
+        cm.[Price],
+        cm.[DateOfManufacturing],
+        cm.[SortOrder],
+        cm.[CreatedOn],
+        cm.[UpdatedOn],
+        cm.[CreatedBy],
+        cm.[UpdatedBy],
+        cm.[Status],
+        cm.[Active]
+    FROM 
+        [CarManagement].[dbo].[CarModels] AS cm
+    WHERE 
+        @Search IS NULL OR 
+        cm.[ModelName] LIKE '%' + @Search + '%' OR 
+        cm.[ModelCode] LIKE '%' + @Search + '%'
+    ORDER BY 
+        CASE WHEN @OrderBy = 'DateOfManufacturing' THEN cm.[DateOfManufacturing] END DESC,
+        CASE WHEN @OrderBy = 'SortOrder' THEN cm.[SortOrder] END;
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetCarModelImages]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetCarModelImages]
+    @CarModelId NVARCHAR(50) -- Adjust size as needed
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        [PhotoUrl]
+    FROM 
+        [CarManagement].[dbo].[CarModelPhotos]
+    WHERE 
+        [CarModelId] = @CarModelId
+    AND 
+        [Status] = 1; -- Assuming 1 indicates active status
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetCarModels]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- Get All Car Models Procedure
+CREATE PROCEDURE [dbo].[GetCarModels]
+AS
+BEGIN
+    SELECT * FROM CarModels;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetUserById]
+    @UserId INT
+AS
+BEGIN
+    SELECT UserId, Username, Email, RoleId, CreatedOn, UpdatedOn
+    FROM Users
+    WHERE UserId = @UserId;
+END
+GO
+/****** Object:  StoredProcedure [dbo].[InsertCarModelImages]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[InsertCarModelImages]
+    @CarModelId NVARCHAR(255),
+    @PhotoUrl NVARCHAR(255),
+ 
+    @CreatedBy NVARCHAR(50)
+    
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO CarModelPhotos (CarModelId, PhotoUrl, CreatedOn, CreatedBy,Status)
+    VALUES (@CarModelId, @PhotoUrl, getdate(), @CreatedBy,1);
+END
+GO
+/****** Object:  StoredProcedure [dbo].[InsertSalesRecord]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[InsertSalesRecord]
+    @SalesmanId NVARCHAR(100),
+    @CarModelId NVARCHAR(100),
+    @NumberOfCarsSold INT,
+    @CreatedBy NVARCHAR(100), -- Adjust size as needed
+    @Brand INT,
+    @Class INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [CarManagement].[dbo].[SalesRecords] 
+    (
+        SalesmanId,
+        CarModelId,
+        NumberOfCarsSold,
+        CreatedOn,
+        UpdatedOn,
+        CreatedBy,
+        UpdatedBy,
+        
+        Brand,
+        Class
+    )
+    VALUES 
+    (
+        @SalesmanId,
+        @CarModelId,
+        @NumberOfCarsSold,
+        GETDATE(), -- Set CreatedOn to current date and time
+        GETDATE(), -- Set UpdatedOn to current date and time
+        @CreatedBy,
+        @CreatedBy, -- Assuming UpdatedBy is the same as CreatedBy
+       
+        @Brand,
+        @Class
+    );
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[InsertUser]    Script Date: 9/23/2024 12:35:13 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[InsertUser]
+    @Username VARCHAR(50),
+    @PasswordHash VARCHAR(255),
+    @Email VARCHAR(100),
+    @RoleId INT,
+    @CreatedOn DATETIME,
+    @CreatedBy VARCHAR(50),
+    @UpdatedOn DATETIME,
+    @UpdatedBy VARCHAR(50),
+    @CId VARCHAR(10) -- Add this line
+AS
+BEGIN
+    INSERT INTO Users (Username, PasswordHash, Email, RoleId, CreatedOn, CreatedBy, UpdatedOn, UpdatedBy, CId)
+    VALUES (@Username, @PasswordHash, @Email, @RoleId, @CreatedOn, @CreatedBy, @UpdatedOn, @UpdatedBy, @CId);
+END
+GO
