@@ -1,6 +1,6 @@
 USE [CarManagement]
 GO
-/****** Object:  StoredProcedure [dbo].[CalculateCommission]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[CalculateCommission]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -25,7 +25,7 @@ BEGIN
     GROUP BY S.Name;
 END;
 GO
-/****** Object:  StoredProcedure [dbo].[CreateCarModel]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[CreateCarModel]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -47,7 +47,7 @@ BEGIN
     VALUES (@Brand, @Class, @ModelName, @ModelCode, @Description, @Features, @Price, @DateOfManufacturing, @SortOrder,1,'system',getdate());  
 END;  
 GO
-/****** Object:  StoredProcedure [dbo].[GetAllCarModels]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetAllCarModels]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -87,7 +87,43 @@ BEGIN
         CASE WHEN @OrderBy = 'SortOrder' THEN cm.[SortOrder] END;
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCarModelImages]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetCarModelById]    Script Date: 9/25/2024 5:24:34 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create PROCEDURE [dbo].[GetCarModelById]
+    @ModelCode NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        cm.[Id],
+        cm.[Brand],
+        cm.[Class],
+        cm.[ModelName],
+        cm.[ModelCode],
+        cm.[Description],
+        cm.[Features],
+        cm.[Price],
+        cm.[DateOfManufacturing],
+        cm.[SortOrder],
+        cm.[CreatedOn],
+        cm.[UpdatedOn],
+        cm.[CreatedBy],
+        cm.[UpdatedBy],
+        cm.[Status],
+        cm.[Active]
+    FROM 
+        [CarManagement].[dbo].[CarModels] AS cm
+    WHERE 
+        @ModelCode IS NULL OR 
+        cm.[ModelCode]=@ModelCode   
+	
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetCarModelImages]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -108,7 +144,7 @@ BEGIN
         [Status] = 1; -- Assuming 1 indicates active status
 END
 GO
-/****** Object:  StoredProcedure [dbo].[GetCarModels]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetCarModels]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,7 +157,7 @@ BEGIN
     SELECT * FROM CarModels;
 END;
 GO
-/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetUserById]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -135,7 +171,7 @@ BEGIN
     WHERE UserId = @UserId;
 END
 GO
-/****** Object:  StoredProcedure [dbo].[InsertCarModelImages]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[InsertCarModelImages]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -154,7 +190,7 @@ BEGIN
     VALUES (@CarModelId, @PhotoUrl, getdate(), @CreatedBy,1);
 END
 GO
-/****** Object:  StoredProcedure [dbo].[InsertSalesRecord]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[InsertSalesRecord]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -199,7 +235,7 @@ BEGIN
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[InsertUser]    Script Date: 9/23/2024 12:35:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[InsertUser]    Script Date: 9/25/2024 5:24:34 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
