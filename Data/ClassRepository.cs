@@ -18,7 +18,7 @@ namespace DemoAppAdo.Data
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Classes WHERE Status = 'Active'", connection);
+                var command = new SqlCommand("SELECT * FROM Classes WHERE Status = 1 ", connection);
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
@@ -31,8 +31,8 @@ namespace DemoAppAdo.Data
                             UpdatedOn = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                             CreatedBy = reader.GetString(4),
                             UpdatedBy = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            Status = reader.GetString(6)
-                        });
+                            Status = reader.GetBoolean(6),
+                    });
                     }
                 }
             }
@@ -70,8 +70,9 @@ namespace DemoAppAdo.Data
                             UpdatedOn = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                             CreatedBy = reader.GetString(4),
                             UpdatedBy = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            Status = reader.GetString(6)
-                        };
+                           Status = reader.GetBoolean(6),
+
+                    };
                     }
                     return null;
                 }
@@ -111,7 +112,7 @@ namespace DemoAppAdo.Data
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("UPDATE Classes SET Status = 'Inactive' WHERE Id = @Id", connection);
+                var command = new SqlCommand("UPDATE Classes SET Status = 2 WHERE Id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 await command.ExecuteNonQueryAsync();
             }

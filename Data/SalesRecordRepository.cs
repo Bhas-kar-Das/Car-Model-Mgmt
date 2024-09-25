@@ -68,12 +68,14 @@ namespace DemoAppAdo.Data
                 var salesFigures = await GetLastYearSalesFiguresAsync(connection);
                 var salesRecords = await GetSalesRecordsAsync(connection);
                 var brands = await GetBrandsAsync(connection);
+                var Classes = await GetClassAsync(connection);
                 var commissionRates = await GetCommissionRatesAsync(connection);
 
                 foreach (var salesRecord in salesRecords)
                 {
                     var salesman = salesFigures.FirstOrDefault(sf => sf.CId == salesRecord.SalesmanId);
                     var brand = brands.FirstOrDefault(b => b.Id == salesRecord.Brand);
+                    var carClass = Classes.FirstOrDefault(c => c.Id == salesRecord.Class);
                     var commissionRate = commissionRates.FirstOrDefault(cr => cr.BrandId == brand.Id);
 
                     if (salesman != null && commissionRate != null)
@@ -96,9 +98,9 @@ namespace DemoAppAdo.Data
                                 reportDict[salesman.SalesmanName].Brands.Add(brand.Name);
                             }
 
-                            if (!reportDict[salesman.SalesmanName].Classes.Contains(salesRecord.Class))
+                            if (!reportDict[salesman.SalesmanName].Classes.Contains(carClass.Name))
                             {
-                                reportDict[salesman.SalesmanName].Classes.Add(salesRecord.Class);
+                                reportDict[salesman.SalesmanName].Classes.Add(carClass.Name);
                             }
                         }
                         else
@@ -109,7 +111,7 @@ namespace DemoAppAdo.Data
                                 NumberOfCarsSold = salesRecord.NumberOfCarsSold,
                                 TotalCommission = totalCommission,
                                 Brands = new List<string> { brand.Name },
-                                Classes = new List<int> { salesRecord.Class }
+                                Classes = new List<string> { carClass.Name }
                             };
                         }
                     }
@@ -162,7 +164,26 @@ namespace DemoAppAdo.Data
 
             return records;
         }
+        private async Task<List<Class>> GetClassAsync(SqlConnection connection)
+        {
+            var Classes = new List<Class>();
+            var command = new SqlCommand("SELECT Id, Name FROM Classes", connection);
 
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    Classes.Add(new Class
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        Name = reader["Name"].ToString()
+                    });
+                }
+            }
+
+            return Classes;
+        }
+       
         private async Task<List<Brand>> GetBrandsAsync(SqlConnection connection)
         {
             var brands = new List<Brand>();
