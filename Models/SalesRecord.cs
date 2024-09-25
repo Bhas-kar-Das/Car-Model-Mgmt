@@ -20,12 +20,12 @@ namespace DemoAppAdo.Models
         public int NumberOfCarsSold { get; set; }
         public decimal TotalCommission { get; set; }
         public List<string> Brands { get; set; } // List of brands sold
-        public List<int> Classes { get; set; } // List of classes sold
+        public List<string> Classes { get; set; } // List of classes sold
 
         public SalesmanCommissionReport()
         {
             Brands = new List<string>();
-            Classes = new List<int>();
+            Classes = new List<string>();
         }
     }
 

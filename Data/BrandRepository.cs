@@ -18,21 +18,29 @@ namespace DemoAppAdo.Data
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Brands WHERE Status = 'Active'", connection);
+                var command = new SqlCommand("SELECT * FROM Brands WHERE Status = 1", connection);
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
                     {
-                        brands.Add(new Brand
+                        while (await reader.ReadAsync())
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            CreatedOn = reader.GetDateTime(2),
-                            UpdatedOn = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
-                            CreatedBy = reader.GetString(4),
-                            UpdatedBy = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            Status = reader.GetString(6)
-                        });
+                            brands.Add(new Brand
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),                              // Access by column name
+                                Name = reader.GetString(reader.GetOrdinal("Name")),                          // Access by column name
+                                CreatedOn = reader.GetDateTime(reader.GetOrdinal("CreatedOn")),              // Access by column name
+                                UpdatedOn = reader.IsDBNull(reader.GetOrdinal("UpdatedOn"))
+                                    ? (DateTime?)null
+                                    : reader.GetDateTime(reader.GetOrdinal("UpdatedOn")),                   // Access by column name
+                                CreatedBy = reader.GetString(reader.GetOrdinal("CreatedBy")),                // Access by column name
+                                UpdatedBy = reader.IsDBNull(reader.GetOrdinal("UpdatedBy"))
+                                    ? null
+                                    : reader.GetString(reader.GetOrdinal("UpdatedBy")),                      // Access by column name
+                                Status = reader.GetBoolean(reader.GetOrdinal("Status"))                      // Access by column name
+                            });
+                        }
+
                     }
                 }
             }
@@ -58,7 +66,7 @@ namespace DemoAppAdo.Data
                             UpdatedOn = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                             CreatedBy = reader.GetString(4),
                             UpdatedBy = reader.IsDBNull(5) ? null : reader.GetString(5),
-                            Status = reader.GetString(6)
+                            Status = reader.GetBoolean(6)
                         };
                     }
                     return null;
@@ -110,7 +118,7 @@ namespace DemoAppAdo.Data
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("UPDATE Brands SET Status = 'Inactive' WHERE Id = @Id", connection);
+                var command = new SqlCommand("UPDATE Brands SET Status = 0 WHERE Id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 await command.ExecuteNonQueryAsync();
             }

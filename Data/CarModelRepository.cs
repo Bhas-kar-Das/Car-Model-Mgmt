@@ -38,6 +38,7 @@ namespace DemoAppAdo.Data
                         {
                             while (await reader.ReadAsync())
                             {
+                               
                                 var carModel = new CarModel
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
@@ -132,19 +133,20 @@ namespace DemoAppAdo.Data
                         {
                             carModel = new CarModel
                             {
-                                Id = reader.GetInt32(0),
-                                Brand = reader.GetInt32(1),
-                                Class = reader.GetInt32(2),
-                                BrandName = await _brandRepository.GetBrandNameById(reader.GetInt32(1)), 
-                                ClassName = await _classRepository.GetClassNameById(reader.GetInt32(2)), 
-                                ModelName = reader.GetString(3),
-                                ModelCode = reader.GetString(4),
-                                Description = reader.GetString(5),
-                                Features = reader.GetString(6),
-                                Price = reader.GetDecimal(7),
-                                DateOfManufacturing = reader.GetDateTime(8),
-                                Active = reader.GetBoolean(9),
-                                SortOrder = reader.GetInt32(10)
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Brand = reader.GetInt32(reader.GetOrdinal("Brand")),
+                                Class = reader.GetInt32(reader.GetOrdinal("Class")),
+                                BrandName = await _brandRepository.GetBrandNameById(reader.GetInt32(reader.GetOrdinal("Brand"))),
+                                ClassName = await _classRepository.GetClassNameById(reader.GetInt32(reader.GetOrdinal("Class"))),
+                                ModelName = reader.GetString(reader.GetOrdinal("ModelName")),
+                                ModelCode = reader.GetString(reader.GetOrdinal("ModelCode")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Features = reader.GetString(reader.GetOrdinal("Features")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                DateOfManufacturing = reader.GetDateTime(reader.GetOrdinal("DateOfManufacturing")),
+                                Active = reader.GetBoolean(reader.GetOrdinal("Active")), // Directly retrieve as bool
+                                SortOrder = reader.GetInt32(reader.GetOrdinal("SortOrder")),
+                                ImageUrls = await GetCarModelImageUrls(reader.GetString(reader.GetOrdinal("ModelCode")))
                             };
                         }
                     }
